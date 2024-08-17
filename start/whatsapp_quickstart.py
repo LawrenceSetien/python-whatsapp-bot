@@ -22,7 +22,6 @@ APP_SECRET = os.getenv("APP_SECRET")
 # Send a template WhatsApp message
 # --------------------------------------------------------------
 
-
 def send_whatsapp_message():
     url = f"https://graph.facebook.com/{VERSION}/{PHONE_NUMBER_ID}/messages"
     headers = {
