@@ -1,9 +1,9 @@
-from openai import OpenAI
-import shelve
-from dotenv import load_dotenv
 import os
 import time
+import shelve
 import logging
+from dotenv import load_dotenv
+from openai import OpenAI
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -12,7 +12,10 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 def upload_file(path):
-    # Upload a file with an "assistants" purpose
+    """
+    Upload a file with an "assistants" pursose
+    """
+
     file = client.files.create(
         file=open("../../data/airbnb-faq.pdf", "rb"), purpose="assistants"
     )

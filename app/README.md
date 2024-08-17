@@ -4,7 +4,7 @@ Welcome to the project! This structure is based on the Flask framework and uses 
 
 ## Directory Structure:
 
-### `app/` 
+### `app/`
 This is the main application directory containing all the core files for our Flask application.
 
 - `__init__.py`: Initializes the Flask app using the Flask factory pattern. This allows for creating multiple instances of the app if needed, e.g., for testing.

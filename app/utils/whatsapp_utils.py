@@ -1,10 +1,10 @@
-import logging
-from flask import current_app, jsonify
+import re
 import json
+import logging
 import requests
+from flask import current_app, jsonify
 
 # from app.services.openai_service import generate_response
-import re
 
 
 def log_http_response(response):
@@ -26,11 +26,24 @@ def get_text_message_input(recipient, text):
 
 
 def generate_response(response):
-    # Return text in uppercase
+    """
+    Return text in uppercase.
+    Comment this function to run openai.
+    """
     return response.upper()
 
 
 def send_message(data):
+    """
+    Sends a message using the Facebook Graph API.
+    Args:
+        data (dict): The message payload to be sent in JSON format.
+
+    Returns:
+        Response object or tuple: The HTTP response from the Facebook Graph API if successful.
+                                  If an error occurs, returns a JSON response with an error message
+                                  and an appropriate HTTP status code.
+    """
     headers = {
         "Content-type": "application/json",
         "Authorization": f"Bearer {current_app.config['ACCESS_TOKEN']}",
@@ -58,8 +71,23 @@ def send_message(data):
 
 
 def process_text_for_whatsapp(text):
+    """
+    Processes a given text to make it compatible with WhatsApp formatting.
+
+    This function performs two main tasks:
+    1. Removes any content enclosed in brackets "【 】".
+    2. Converts text enclosed in double asterisks "** **" to single asterisks "* *",
+       which is the markdown format used in WhatsApp to denote bold text.
+
+    Args:
+        text (str): The input string that needs to be processed.
+
+    Returns:
+        str: The processed text, formatted for WhatsApp.
+    """
     # Remove brackets
     pattern = r"\【.*?\】"
+
     # Substitute the pattern with an empty string
     text = re.sub(pattern, "", text).strip()
 
@@ -76,16 +104,30 @@ def process_text_for_whatsapp(text):
 
 
 def process_whatsapp_message(body):
+    """
+    Processes an incoming WhatsApp message and sends an appropriate response.
+
+    This function extracts the WhatsApp ID, sender's name, and the message content
+    from the incoming webhook `body`. It then generates a response based on the
+    message content and sends this response back to the user using the WhatsApp API.
+
+    Args:
+        body (dict): The webhook payload from WhatsApp containing the message data.
+
+    Returns:
+        None
+    """
+
     wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
     name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
 
     message = body["entry"][0]["changes"][0]["value"]["messages"][0]
     message_body = message["text"]["body"]
 
-    # TODO: implement custom function here
+    # Option 1: Return same text in uper case
     response = generate_response(message_body)
 
-    # OpenAI Integration
+    # Option 2: OpenAI Integration
     # response = generate_response(message_body, wa_id, name)
     # response = process_text_for_whatsapp(response)
 
