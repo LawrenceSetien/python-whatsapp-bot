@@ -1,8 +1,12 @@
+import awsgi
 import logging
 from app import create_app
 
 
 app = create_app()
+
+def lambda_handler(event, context):
+    return awsgi.response(app, event, context, base64_content_type={"image/png"})
 
 if __name__ == "__main__":
     logging.info("Flask app started")
