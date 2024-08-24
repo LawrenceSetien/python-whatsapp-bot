@@ -2,6 +2,8 @@ import os
 import time
 import shelve
 import logging
+import boto3
+
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -17,9 +19,26 @@ def check_if_thread_exists(wa_id):
         return threads_shelf.get(wa_id, None)
 
 
+# TODO - Complete this
 def store_thread(wa_id, thread_id):
     with shelve.open("threads_db", writeback=True) as threads_shelf:
         threads_shelf[wa_id] = thread_id
+
+    # Initialize DynamoDB client
+    dynamodb = boto3.client('dynamodb')
+
+    # Set the expiration time to 24 hours from now
+    expiration_time = int(time.time()) + 86400
+
+    # Add an item with the TTL attribute
+    dynamodb.put_item(
+        TableName='YourTableName',
+        Item={
+            'PrimaryKey': {'S': 'your_primary_key_value'},
+            'TTLAttribute': {'N': str(expiration_time)},
+            # Other attributes
+        }
+    )
 
 
 def run_assistant(thread, name):
