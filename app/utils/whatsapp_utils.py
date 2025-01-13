@@ -117,7 +117,7 @@ def process_whatsapp_message(body):
         None
     """
 
-    wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
+    wsp_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
     name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
 
     message = body["entry"][0]["changes"][0]["value"]["messages"][0]
@@ -127,7 +127,7 @@ def process_whatsapp_message(body):
     # response = generate_upper_case_response(message_body)
 
     # Option 2: OpenAI Integration
-    response = generate_response(message_body, wa_id, name)
+    response = generate_response(message_body, wsp_id, name)
     response = process_text_for_whatsapp(response)
 
     data = get_text_message_input(current_app.config["RECIPIENT_WAID"], response)

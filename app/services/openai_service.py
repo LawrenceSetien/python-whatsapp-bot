@@ -12,14 +12,14 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 # Use context manager to ensure the shelf file is closed properly
-def check_if_thread_exists(wa_id):
+def check_if_thread_exists(wsp_id):
     with shelve.open("threads_db") as threads_shelf:
-        return threads_shelf.get(wa_id, None)
+        return threads_shelf.get(wsp_id, None)
 
 
-def store_thread(wa_id, thread_id):
+def store_thread(wsp_id, thread_id):
     with shelve.open("threads_db", writeback=True) as threads_shelf:
-        threads_shelf[wa_id] = thread_id
+        threads_shelf[wsp_id] = thread_id
 
 
 def run_assistant(thread, name):
@@ -47,20 +47,20 @@ def run_assistant(thread, name):
     return new_message
 
 
-def generate_response(message_body, wa_id, name):
-    # Check if there is already a thread_id for the wa_id
-    thread_id = check_if_thread_exists(wa_id)
+def generate_response(message_body, wsp_id, name):
+    # Check if there is already a thread_id for the wsp_id
+    thread_id = check_if_thread_exists(wsp_id)
 
     # If a thread doesn't exist, create one and store it
     if thread_id is None:
-        logging.info(f"Creating new thread for {name} with wa_id {wa_id}")
+        logging.info(f"Creating new thread for {name} with wsp_id {wsp_id}")
         thread = client.beta.threads.create()
-        store_thread(wa_id, thread.id)
+        store_thread(wsp_id, thread.id)
         thread_id = thread.id
 
     # Otherwise, retrieve the existing thread
     else:
-        logging.info(f"Retrieving existing thread for {name} with wa_id {wa_id}")
+        logging.info(f"Retrieving existing thread for {name} with wsp_id {wsp_id}")
         thread = client.beta.threads.retrieve(thread_id)
 
     # Add message to thread
