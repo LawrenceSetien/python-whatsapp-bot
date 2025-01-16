@@ -12,7 +12,14 @@ thread_status = {}
 
 def run_assistant(thread, name):
     """
-    TODO
+    Runs an OpenAI Assistant thread and retrieves its response.
+
+    Args:
+        thread: The thread object for the assistant interaction.
+        name: The name of the user interacting with the assistant.
+
+    Returns:
+        The text response from the assistant after the thread run is completed.
     """
 
     # Retrieve the Assistant
@@ -26,7 +33,6 @@ def run_assistant(thread, name):
     )
 
     # Wait for completion
-    # https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps#:~:text=under%20failed_at.-,Polling%20for%20updates,-In%20order%20to
     while run.status != "completed":
         # Be nice to the API
         time.sleep(0.5)
@@ -48,7 +54,15 @@ def is_thread_active(thread_id):
 
 def generate_response(message_body, wsp_id, name):
     """
-    TODO
+    Generates a response from the OpenAI Assistant for a given message.
+
+    Args:
+        message_body: The content of the user's message.
+        wsp_id: The unique identifier for the WhatsApp session.
+        name: The name of the user interacting with the assistant.
+
+    Returns:
+        The assistant's response as a string.
     """
 
     # Check if there is already a thread_id for the wsp_id
@@ -68,7 +82,7 @@ def generate_response(message_body, wsp_id, name):
     if is_thread_active(thread_id):
         # Wait until the thread is no longer active
         while is_thread_active(thread_id):
-            time.sleep(1)  # Adjust the sleep duration as needed
+            time.sleep(1)
 
     # Mark the thread as active
     set_thread_active(thread_id, True)

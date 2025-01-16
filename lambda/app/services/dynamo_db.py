@@ -11,9 +11,12 @@ AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_REGION_NAME = os.getenv("AWS_REGION_NAME")
 
 
-def dynamodb_table_connector():
+def dynamodb_table_connector() -> object:
     """
-    TODO
+    Connects to an Amazon DynamoDB table and returns the table resource.
+
+    Returns:
+        A DynamoDB Table resource connected to the specified table.
     """
     # Initialize a session using Amazon DynamoDB
     session = boto3.Session(
@@ -30,9 +33,15 @@ def dynamodb_table_connector():
 
     return table
 
-def store_thread(wsp_id, thread_id):
+
+def store_thread(wsp_id: str, thread_id: str) -> None:
     """
-    TODO
+    Stores a thread in a DynamoDB table with metadata, including timestamps and time-to-live.
+
+    Args:
+        wsp_id: The unique identifier for the WhatsApp session.
+        thread_id: The unique identifier for the thread to be stored.
+
     """
 
     table = dynamodb_table_connector()
@@ -55,11 +64,18 @@ def store_thread(wsp_id, thread_id):
 
     # Insert the data into the table
     table.put_item(Item=item)
+    print(f"item saved: {item}")
 
 
-def check_if_thread_exists(wsp_id):
+def check_if_thread_exists(wsp_id: str):
     """
-    TODO
+    Checks if a thread exists in the DynamoDB table for a given WhatsApp session ID.
+
+    Args:
+        wsp_id: The unique identifier for the WhatsApp session.
+
+    Returns:
+        The 'thread_id' if a thread exists for the specified `wsp_id`, otherwise None.
     """
 
     table = dynamodb_table_connector()
@@ -75,6 +91,8 @@ def check_if_thread_exists(wsp_id):
     # Check if items were found and return the 'thread_id' if it exists
     if items:
         # Assuming 'thread_id' is one of the attributes in the item
+        print(f"items retrieved: {items}")
+
         return items[0].get('thread_id', None)
 
     return None

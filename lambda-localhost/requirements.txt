@@ -1,7 +1,0 @@
-flask
-python-dotenv
-openai
-aiohttp
-requests
-aws-wsgi
-boto3

@@ -14,7 +14,16 @@ webhook_blueprint = Blueprint("webhook", __name__)
 @webhook_blueprint.route("/webhook", methods=["GET"])
 def webhook_get():
     """
-    TODO
+    Verifies and handles incoming webhook requests for webhook verification.
+
+    This route processes the webhook verification request by checking the
+    validity of the `hub.mode` and `hub.verify_token` parameters. If the
+    verification is successful, it returns the challenge token; otherwise,
+    it responds with an error status.
+
+    Returns:
+        A challenge token with a 200 OK status if verification is successful,
+        or an error message with an appropriate HTTP status code (403 or 400).
     """
     # Parse params from the webhook verification request
     mode = request.args.get("hub.mode")
@@ -54,7 +63,7 @@ def webhook_post():
         response: A tuple containing a JSON response and an HTTP status code.
     """
     body = request.get_json()
-    # logging.info(f"request body: {body}")
+    logging.info(f"request body: {body}")
 
     # Check if it's a WhatsApp status update
     if (
@@ -68,7 +77,10 @@ def webhook_post():
 
     try:
         if is_valid_whatsapp_message(body):
+
+            # Process the incoming WhatsApp message -> ChatGPT
             process_whatsapp_message(body)
+
             return jsonify({"status": "ok"}), 200
         else:
             # if the request is not a WhatsApp API event, return an error
